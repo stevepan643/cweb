@@ -1,5 +1,7 @@
-#include "platform.h"
-#include "http.h"
+#include "utils/platform/platform.h"
+#include "http/http.h"
+#include "http/http_request.h"
+#include "http/http_response.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -18,8 +20,8 @@ int main(void)
     net_init();
 
     NetSocket* server = net_tcp_listen("0.0.0.0", 7878);
-    register_route(GET, "/test1", test1);
-    register_route(GET, "/test2", test2);
+    register_get_route("/test1", test1);
+    register_get_route("/test2", test2);
 
     while (1) {
         NetSocket* client = net_accept(server);
