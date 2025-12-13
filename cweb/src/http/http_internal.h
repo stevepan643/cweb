@@ -2,6 +2,7 @@
 #define HTTP_INTERNAL_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define MAX_HEADER_SIZE 32
 
