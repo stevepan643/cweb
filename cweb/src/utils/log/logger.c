@@ -36,7 +36,7 @@ static const char* level_to_color(LogLevel level) {
 static void get_file_name(char* buf, size_t size) {
     time_t t = time(NULL);
     struct tm tm;
-    localtime_safe(&tm, &t);
+    localtime_safe(&t, &tm);
     strftime(buf, size, g_logger.file_name_pattern, &tm);
 }
 
@@ -55,7 +55,7 @@ void log_log(LogLevel level, const char* file, int line, const char* fmt, ...) {
     char timebuf[64];
     time_t t = time(NULL);
     struct tm tm;
-    localtime_safe(&tm, &t);
+    localtime_safe(&t, &tm);
     strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S", &tm);
 
     char msg[1024];
