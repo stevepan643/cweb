@@ -1,4 +1,5 @@
 #include "utils/platform/platform.h"
+#include "utils/log/logger.h"
 #include "http/http.h"
 #include "http/http_request.h"
 #include "http/http_response.h"
@@ -45,6 +46,7 @@ PAGE(test_delete) {
 
 int main(void)
 {
+    log_init(LOG_INFO, 1, "logs/app_%Y-%m-%d.log");
     net_init();
 
     NetSocket* server = net_tcp_listen("0.0.0.0", 7878);
@@ -64,5 +66,6 @@ int main(void)
     }
 
     net_shutdown();
+    log_shutdown();
     return 0;
 }

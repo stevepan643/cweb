@@ -15,6 +15,9 @@ NetSocket* net_accept(NetSocket* server);
 int net_send(NetSocket* s, const void* buf, int len);
 int net_recv(NetSocket* s, void* buf, int len);
 
+const char* net_get_ip(NetSocket* s);
+uint16_t net_get_port(NetSocket* s);
+
 void net_close(NetSocket* s);
 
 // ======== 綫程 ========
@@ -31,5 +34,8 @@ Mutex* mutex_create(void);
 void mutex_lock(Mutex* m);
 void mutex_unlock(Mutex* m);
 void mutex_free(Mutex* m);
+
+// ======== I/O ========
+int mkdir(const char* path);
 
 #endif

@@ -1,4 +1,5 @@
 #include "utils/file/file.h"
+#include "utils/platform/platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,16 +44,69 @@ char* file_read_all(const char* path, size_t* out_len)
     return buf;
 }
 
+int mkdir_p(const char* path)
+{
+    if (!path || !*path) return -1;
+
+    char tmp[512];
+    size_t len;
+
+    strncpy(tmp, path, sizeof(tmp));
+    tmp[sizeof(tmp) - 1] = '\0';
+
+    len = strlen(tmp);
+    if (len == 0) return -1;
+
+    // 去掉末尾分隔符
+    if (tmp[len - 1] == '/' || tmp[len - 1] == '\\') {
+        tmp[len - 1] = '\0';
+    }
+
+    for (char* p = tmp + 1; *p; p++) {
+        if (*p == '/' || *p == '\\') {
+            char c = *p;
+            *p = '\0';
+
+            if (mkdir(tmp) != 0) {
+                return -1;
+            }
+
+            *p = c;
+        }
+    }
+
+    // 创建最后一级
+    if (mkdir(tmp) != 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
 int file_write_all(const char* path, const char* buf, size_t len)
 {
     if (!path || !buf) return -1;
 
-    FILE* f = fopen(path, "wb");
+    char dir[512];
+    strncpy(dir, path, sizeof(dir));
+    dir[sizeof(dir) - 1] = '\0';
+
+    char* slash1 = strrchr(dir, '/');
+    char* slash2 = strrchr(dir, '\\');
+    char* slash = slash1 > slash2 ? slash1 : slash2;
+
+    if (slash) {
+        *slash = '\0';
+        if (mkdir_p(dir) != 0) {
+            return -1;
+        }
+    }
+
+    FILE* f = fopen(path, "ab");
     if (!f) return -1;
 
     size_t written = fwrite(buf, 1, len, f);
     fclose(f);
 
-    if (written != len) return -1;
-    return 0;
+    return (written == len) ? 0 : -1;
 }

@@ -11,6 +11,7 @@ struct HttpRequest {
     HeaderTable headers;
     char* content;
     size_t content_length;
+    time_t request_time;
 };
 
 #endif

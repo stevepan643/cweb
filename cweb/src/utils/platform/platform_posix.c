@@ -1,4 +1,5 @@
 #include "utils/platform/platform.h"
+#include "utils/log/logger.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -13,17 +14,21 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <sys/stat.h>
+
 struct NetSocket {
     int fd;
 };
 
 int net_init(void)
 {
+    LOG_INFO("Server starting...");
     return 0;
 }
 
 void net_shutdown(void)
 {
+    LOG_INFO("Server shutting down");
 }
 
 NetSocket* net_tcp_listen(const char* ip, uint16_t port)
@@ -53,6 +58,9 @@ NetSocket* net_tcp_listen(const char* ip, uint16_t port)
 
     NetSocket* s = malloc(sizeof(NetSocket));
     s->fd = fd;
+
+    LOG_INFO("Listening on %s:%d", ip, port);
+
     return s;
 }
 
@@ -79,6 +87,49 @@ int net_recv(NetSocket* s, void* buf, int len)
 {
     if (!s) return -1;
     return (int)recv(s->fd, buf, len, 0);
+}
+
+const char* net_get_ip(NetSocket* s)
+{
+    static char ip_str[INET6_ADDRSTRLEN];
+    if (!s) return NULL;
+
+    struct sockaddr_storage addr;
+    socklen_t addr_len = sizeof(addr);
+    if (getpeername(s->sock, (struct sockaddr*)&addr, &addr_len) == -1)
+        return NULL;
+
+    if (addr.ss_family == AF_INET) {
+        struct sockaddr_in* s4 = (struct sockaddr_in*)&addr;
+        inet_ntop(AF_INET, &s4->sin_addr, ip_str, sizeof(ip_str));
+    } else if (addr.ss_family == AF_INET6) {
+        struct sockaddr_in6* s6 = (struct sockaddr_in6*)&addr;
+        inet_ntop(AF_INET6, &s6->sin6_addr, ip_str, sizeof(ip_str));
+    } else {
+        return NULL;
+    }
+
+    return ip_str;
+}
+
+uint16_t net_get_port(NetSocket* s)
+{
+    if (!s) return 0;
+
+    struct sockaddr_storage addr;
+    socklen_t addr_len = sizeof(addr);
+    if (getpeername(s->sock, (struct sockaddr*)&addr, &addr_len) == -1)
+        return 0;
+
+    if (addr.ss_family == AF_INET) {
+        struct sockaddr_in* s4 = (struct sockaddr_in*)&addr;
+        return ntohs(s4->sin_port);
+    } else if (addr.ss_family == AF_INET6) {
+        struct sockaddr_in6* s6 = (struct sockaddr_in6*)&addr;
+        return ntohs(s6->sin6_port);
+    }
+
+    return 0;
 }
 
 void net_close(NetSocket* s)
@@ -186,4 +237,11 @@ void mutex_free(Mutex* m)
     if (!m) return;
     pthread_mutex_destroy(&m->mutex);
     free(m);
+}
+
+int mkdir(const char* path)
+{
+    if (mkdir(path, 0755) == 0) return 0;
+    if (errno == EEXIST) return 0;
+    return -1;
 }

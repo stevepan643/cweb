@@ -12,10 +12,9 @@ set(HTTP_SOURCES
     src/http/http_server.c
 )
 
-# set(LOG_SOURCES
-#     src/log/log_core.c
-#     src/log/log_rotate.c
-# )
+set(LOG_SOURCES
+    src/utils/log/logger.c
+)
 
 set(FILE_SOURCES
     src/utils/file/file.c
@@ -37,7 +36,7 @@ endif()
 # ------------------- 构建库 -------------------
 add_library(cweb_lib STATIC
     ${HTTP_SOURCES}
-    # ${LOG_SOURCES}
+    ${LOG_SOURCES}
     ${PLATFORM_SOURCES}
     ${FILE_SOURCES}
 )
