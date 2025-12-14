@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 
 struct NetSocket {
-    int fd;
+    int sock;
 };
 
 int net_init(void)
@@ -57,7 +57,7 @@ NetSocket* net_tcp_listen(const char* ip, uint16_t port)
     }
 
     NetSocket* s = malloc(sizeof(NetSocket));
-    s->fd = fd;
+    s->sock = fd;
 
     LOG_INFO("Listening on %s:%d", ip, port);
 
@@ -80,13 +80,13 @@ NetSocket* net_accept(NetSocket* server)
 int net_send(NetSocket* s, const void* buf, int len)
 {
     if (!s) return -1;
-    return (int)send(s->fd, buf, len, 0);
+    return (int)send(s->sock, buf, len, 0);
 }
 
 int net_recv(NetSocket* s, void* buf, int len)
 {
     if (!s) return -1;
-    return (int)recv(s->fd, buf, len, 0);
+    return (int)recv(s->sock, buf, len, 0);
 }
 
 const char* net_get_ip(NetSocket* s)
@@ -135,7 +135,7 @@ uint16_t net_get_port(NetSocket* s)
 void net_close(NetSocket* s)
 {
     if (!s) return;
-    close(s->fd);
+    close(s->sock);
     free(s);
 }
 
@@ -241,7 +241,7 @@ void mutex_free(Mutex* m)
 
 int mkdirectory(const char* path)
 {
-    if (mkdirectory(path, 0755) == 0) return 0;
+    if (mkdir(path, 0755) == 0) return 0;
     if (errno == EEXIST) return 0;
     return -1;
 }
