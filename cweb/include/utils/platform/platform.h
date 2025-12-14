@@ -36,6 +36,6 @@ void mutex_unlock(Mutex* m);
 void mutex_free(Mutex* m);
 
 // ======== I/O ========
-int mkdir(const char* path);
+int mkdirectory(const char* path);
 
 #endif

@@ -222,7 +222,7 @@ void mutex_free(Mutex* m)
     free(m);
 }
 
-int mkdir(const char* path)
+int mkdirectory(const char* path)
 {
     if (_mkdir(path) == 0) return 0;
     if (errno == EEXIST) return 0;

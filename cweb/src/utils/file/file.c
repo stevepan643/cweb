@@ -67,7 +67,7 @@ int mkdir_p(const char* path)
             char c = *p;
             *p = '\0';
 
-            if (mkdir(tmp) != 0) {
+            if (mkdirectory(tmp) != 0) {
                 return -1;
             }
 
@@ -76,7 +76,7 @@ int mkdir_p(const char* path)
     }
 
     // 创建最后一级
-    if (mkdir(tmp) != 0) {
+    if (mkdirectory(tmp) != 0) {
         return -1;
     }
 
