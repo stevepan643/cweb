@@ -68,12 +68,12 @@ NetSocket* net_accept(NetSocket* server)
 {
     if (!server) return NULL;
 
-    int client_fd = accept(server->fd, NULL, NULL);
+    int client_fd = accept(server->sock, NULL, NULL);
     if (client_fd < 0)
         return NULL;
 
     NetSocket* c = malloc(sizeof(NetSocket));
-    c->fd = client_fd;
+    c->sock = client_fd;
     return c;
 }
 
