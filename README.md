@@ -13,6 +13,7 @@ suitable for learning and experimental projects.
 - 返回靜態 HTML 文件、JSON 和純文本響應
 - 簡單路由系統，支持不同接口函數綁定
 - TCP 網絡封裝，跨平台接口初步設計
+- 日誌系統，支持請求、響應與錯誤記錄
 
 ### Implemented ✅
 
@@ -20,12 +21,12 @@ suitable for learning and experimental projects.
 - Serve static HTML files, JSON and plain text responses
 - Simple routing system with handler function binding
 - Basic TCP networking abstraction for cross-platform use
+- Logging system for requests, responses, and errors
 
 ### 不久將來計劃 🎯
 
 - 支持多種文件類型（HTML / CSS / JS / JSON / images 等）
 - 更智能的資源查找，支持自定義路徑和相對路徑
-- 日誌系統，支持請求、響應與錯誤記錄
 - 後臺終端命令接口，方便服務運維
 - 多線程優化，提高並發處理能力
 - 內存管理優化，避免內存泄漏和重複分配
@@ -35,7 +36,6 @@ suitable for learning and experimental projects.
 
 - Support multiple file types (HTML / CSS / JS / JSON / images, etc.)
 - Smarter resource locating, with custom and relative paths
-- Logging system for requests, responses, and errors
 - Background terminal command interface for server management
 - Multithreading support for better concurrency
 - Memory management optimization to prevent leaks and redundant allocation
