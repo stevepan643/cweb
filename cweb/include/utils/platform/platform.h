@@ -2,6 +2,7 @@
 #define PLATFORM_H
 
 #include <stdint.h>
+#include <time.h>
 
 // ======== 網絡 ========
 typedef struct NetSocket NetSocket;
@@ -37,5 +38,8 @@ void mutex_free(Mutex* m);
 
 // ======== I/O ========
 int mkdirectory(const char* path);
+
+// ======== 時間 ========
+int localtime_safe(const time_t* t, struct tm* out_tm);
 
 #endif

@@ -4,6 +4,8 @@
 #include "http/http_internal.h"
 #include "http/http_response.h"
 
+#include <time.h>
+
 struct HttpResponse {
     int status;
     const char *status_text;

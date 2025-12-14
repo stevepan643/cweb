@@ -245,3 +245,8 @@ int mkdirectory(const char* path)
     if (errno == EEXIST) return 0;
     return -1;
 }
+
+int localtime_safe(const time_t* t, struct tm* out_tm)
+{
+    return localtime_r(t, out_tm) ? 0 : -1;
+}
