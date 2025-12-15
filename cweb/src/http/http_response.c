@@ -89,6 +89,7 @@ void free_response(HttpResponse* res) {
 
     free(res);
 }
+
 char* build_http_response(HttpResponse* res, size_t* out_len) {
     if (!res) return NULL;
 
@@ -98,49 +99,52 @@ char* build_http_response(HttpResponse* res, size_t* out_len) {
 
     char* body_buf = res->body;
     size_t body_len = res->body_length;
+    int body_buf_allocated = 0; // 是否需要 free
 
     // --------- 处理文件 ---------
     if (res->file_path) {
-        body_buf = file_read_all(res->file_path, &body_len);
-        if (!body_buf) {
+        char* file_buf = file_read_all(res->file_path, &body_len);
+        if (!file_buf) {
             // 文件读取失败，返回 404
             res->status = 404;
             res->status_text = "Not Found";
-            const char* err = "File not found";
-            body_buf = (char*)err;
-            body_len = strlen(err);
+            body_buf = (char*)"File not found"; // 静态字符串
+            body_len = strlen(body_buf);
         } else {
-            // 自动根据文件类型添加 Content-Type
-            // 这里只做简单示例，默认 text/html
+            body_buf = file_buf;
+            body_buf_allocated = 1;  // 需要释放
+            // 自动添加 Content-Type
             http_response_add_header(res, "Content-Type", "text/html; charset=utf-8");
         }
     }
 
-    // 状态行
+    // --------- 构建 HTTP 头 ---------
     pos += snprintf(header_buf + pos, sizeof(header_buf) - pos,
-        "%s %d %s\r\n", http_version, res->status,
-        res->status_text ? res->status_text : "");
+                    "%s %d %s\r\n",
+                    http_version,
+                    res->status,
+                    res->status_text ? res->status_text : "");
 
     // 自定义 Header
     for (size_t i = 0; i < res->headers.count; i++) {
         pos += snprintf(header_buf + pos, sizeof(header_buf) - pos,
-            "%s: %s\r\n",
-            res->headers.items[i].key,
-            res->headers.items[i].value);
+                        "%s: %s\r\n",
+                        res->headers.items[i].key,
+                        res->headers.items[i].value);
     }
 
     // Content-Length 和 Connection
     pos += snprintf(header_buf + pos, sizeof(header_buf) - pos,
-        "Content-Length: %zu\r\n"
-        "Connection: close\r\n"
-        "\r\n",
-        body_len);
+                    "Content-Length: %zu\r\n"
+                    "Connection: close\r\n"
+                    "\r\n",
+                    body_len);
 
-    // 分配完整缓冲区
+    // --------- 分配完整缓冲区 ---------
     size_t total_len = pos + body_len;
     char* buffer = malloc(total_len);
     if (!buffer) {
-        if (res->file_path && body_buf != res->body) free(body_buf);
+        if (body_buf_allocated) free(body_buf);
         return NULL;
     }
 
@@ -151,8 +155,8 @@ char* build_http_response(HttpResponse* res, size_t* out_len) {
 
     if (out_len) *out_len = total_len;
 
-    // 如果是文件读取的 body，需要释放
-    if (res->file_path && body_buf != res->body) free(body_buf);
+    // 释放 file_read_all 分配的内存
+    if (body_buf_allocated) free(body_buf);
 
     return buffer;
 }
