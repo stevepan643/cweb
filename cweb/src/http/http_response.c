@@ -41,8 +41,26 @@ void http_response_set_text(HttpResponse* res, const char* text)
     if (res->body) free(res->body);
 
     res->body_length = strlen(text);
-    res->body = malloc(res->body_length);
+    res->body = malloc(res->body_length + 1); // 留出 '\0'
+    if (!res->body) return;
+
     memcpy(res->body, text, res->body_length);
+    res->body[res->body_length] = '\0'; // 终止符
+
+    http_response_add_header(res, "Content-Type", "text/plain");
+}
+void http_response_set_text_len(HttpResponse* res, const char* text, size_t len)
+{
+    if (!res || !text) return;
+
+    if (res->body) free(res->body);
+
+    res->body = malloc(len + 1);
+    if (!res->body) return;
+
+    memcpy(res->body, text, len);
+    res->body[len] = '\0'; // 保证终止符
+    res->body_length = len;
 
     http_response_add_header(res, "Content-Type", "text/plain");
 }
@@ -56,11 +74,11 @@ void http_response_set_json(HttpResponse* res, const char* json, ...)
     va_end(args);
 
     if (res->body) free(res->body);
-    res->body = malloc(len);
+    res->body = malloc(len + 1); // 多分配一个字节给 '\0'
     if (!res->body) return;
 
     va_start(args, json);
-    vsnprintf(res->body, len + 1, json, args);
+    vsnprintf(res->body, len + 1, json, args); // 写入 '\0'
     va_end(args);
     res->body_length = len;
 

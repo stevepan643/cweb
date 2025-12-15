@@ -49,7 +49,7 @@ PAGE(test_delete) {
 int main(void)
 {
     ThreadPool* pool = thread_pool_create(16);
-    log_init(LOG_INFO, 1, "logs/app_%Y-%m-%d.log");
+    log_init(LOG_WARN, 1, "logs/app_%Y-%m-%d.log");
     net_init();
 
     NetSocket* server = net_tcp_listen("0.0.0.0", 7878);
