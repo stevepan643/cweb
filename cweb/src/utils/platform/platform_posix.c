@@ -239,6 +239,38 @@ void mutex_free(Mutex* m)
     free(m);
 }
 
+struct Cond {
+    pthread_cond_t cond;
+} Cond;
+
+Cond* cond_create(void) {
+    Cond* c = malloc(sizeof(Cond));
+    if (!c) return NULL;
+    pthread_cond_init(&c->cond, NULL);
+    return c;
+}
+
+void cond_wait(Cond* c, Mutex* m) {
+    if (!c || !m) return;
+    pthread_cond_wait(&c->cond, &m->mutex);
+}
+
+void cond_signal(Cond* c) {
+    if (!c) return;
+    pthread_cond_signal(&c->cond);
+}
+
+void cond_broadcast(Cond* c) {
+    if (!c) return;
+    pthread_cond_broadcast(&c->cond);
+}
+
+void cond_free(Cond* c) {
+    if (!c) return;
+    pthread_cond_destroy(&c->cond);
+    free(c);
+}
+
 int mkdirectory(const char* path)
 {
     if (mkdir(path, 0755) == 0) return 0;

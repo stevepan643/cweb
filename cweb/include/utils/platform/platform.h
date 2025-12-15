@@ -24,6 +24,7 @@ void net_close(NetSocket* s);
 // ======== 綫程 ========
 typedef struct Thread Thread;
 typedef struct Mutex Mutex;
+typedef struct Cond Cond;
 
 Thread* thread_create(void (*func)(void*), void* arg);
 void thread_join(Thread* t);
@@ -35,6 +36,12 @@ Mutex* mutex_create(void);
 void mutex_lock(Mutex* m);
 void mutex_unlock(Mutex* m);
 void mutex_free(Mutex* m);
+
+Cond* cond_create(void);
+void cond_wait(Cond* c, Mutex* m);
+void cond_signal(Cond* c);
+void cond_broadcast(Cond* c);
+void cond_free(Cond* c);
 
 // ======== I/O ========
 int mkdirectory(const char* path);

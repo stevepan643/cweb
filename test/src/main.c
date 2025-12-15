@@ -1,10 +1,12 @@
 #include "utils/platform/platform.h"
+#include "utils/thread_pool/tread_pool.h"
 #include "utils/log/logger.h"
 #include "http/http.h"
 #include "http/http_request.h"
 #include "http/http_response.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define PAGE(x) void x(const HttpRequest* req, HttpResponse* res)
 
@@ -46,6 +48,7 @@ PAGE(test_delete) {
 
 int main(void)
 {
+    ThreadPool* pool = thread_pool_create(16);
     log_init(LOG_INFO, 1, "logs/app_%Y-%m-%d.log");
     net_init();
 
@@ -61,11 +64,16 @@ int main(void)
     while (1) {
         NetSocket* client = net_accept(server);
         if (!client) continue;
-        handle_client(server, client);
-        net_close(client);
+
+        ClientTaskArg* arg = malloc(sizeof(ClientTaskArg));
+        arg->s = server;
+        arg->client = client;
+
+        thread_pool_submit(pool, handle_client_task, arg);
     }
 
     net_shutdown();
     log_shutdown();
+    thread_pool_destroy(pool);
     return 0;
 }

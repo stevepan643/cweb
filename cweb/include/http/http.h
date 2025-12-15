@@ -18,4 +18,10 @@ void register_post_route(const char* route, RouteHandler handler);
 void register_delete_route(const char* route, RouteHandler handler);
 void handle_client(NetSocket* s, NetSocket* client);
 
+typedef struct {
+    NetSocket* s;
+    NetSocket* client;
+} ClientTaskArg;
+void* handle_client_task(void* arg);
+
 #endif

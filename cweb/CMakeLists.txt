@@ -20,6 +20,10 @@ set(FILE_SOURCES
     src/utils/file/file.c
 )
 
+set(THREAD_POOL_SOUCES
+    src/utils/thread_pool/thread_pool.c
+)
+
 if(WIN32)
     set(PLATFORM_SOURCES
         src/utils/platform/platform_win32.c
@@ -39,6 +43,7 @@ add_library(cweb_lib STATIC
     ${LOG_SOURCES}
     ${PLATFORM_SOURCES}
     ${FILE_SOURCES}
+    ${THREAD_POOL_SOUCES}
 )
 
 # 对外头文件

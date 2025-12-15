@@ -222,6 +222,36 @@ void mutex_free(Mutex* m)
     free(m);
 }
 
+struct Cond {
+    CONDITION_VARIABLE cv;
+};
+
+Cond* cond_create(void) {
+    Cond* c = malloc(sizeof(Cond));
+    InitializeConditionVariable(&c->cv);
+    return c;
+}
+
+void cond_free(Cond* c) {
+    free(c);
+}
+
+void cond_wait(Cond* c, Mutex* m) {
+    SleepConditionVariableCS(
+        &c->cv,
+        &m->cs,
+        INFINITE
+    );
+}
+
+void cond_signal(Cond* c) {
+    WakeConditionVariable(&c->cv);
+}
+
+void cond_broadcast(Cond* c) {
+    WakeAllConditionVariable(&c->cv);
+}
+
 int mkdirectory(const char* path)
 {
     if (_mkdir(path) == 0) return 0;
