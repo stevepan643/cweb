@@ -14,6 +14,7 @@ suitable for learning and experimental projects.
 - 簡單路由系統，支持不同接口函數綁定
 - TCP 網絡封裝，跨平台接口初步設計
 - 日誌系統，支持請求、響應與錯誤記錄
+- 多線程優化，提高並發處理能力
 
 ### Implemented ✅
 
@@ -22,13 +23,13 @@ suitable for learning and experimental projects.
 - Simple routing system with handler function binding
 - Basic TCP networking abstraction for cross-platform use
 - Logging system for requests, responses, and errors
+- Multithreading support for better concurrency
 
 ### 不久將來計劃 🎯
 
 - 支持多種文件類型（HTML / CSS / JS / JSON / images 等）
 - 更智能的資源查找，支持自定義路徑和相對路徑
 - 後臺終端命令接口，方便服務運維
-- 多線程優化，提高並發處理能力
 - 內存管理優化，避免內存泄漏和重複分配
 - 配置文件支持，方便定義端口、路徑和參數
 
@@ -37,7 +38,6 @@ suitable for learning and experimental projects.
 - Support multiple file types (HTML / CSS / JS / JSON / images, etc.)
 - Smarter resource locating, with custom and relative paths
 - Background terminal command interface for server management
-- Multithreading support for better concurrency
 - Memory management optimization to prevent leaks and redundant allocation
 - Configuration file support for defining port, paths, and parameters
 
