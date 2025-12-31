@@ -6,6 +6,6 @@ CWeb is a web framework based on runtime + plugins system.
 
 ![See this.](./TODO.md)
 
-## 许可证 License
+## License
 
 MIT License © 2025

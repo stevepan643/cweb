@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* -------------------- \u989c\u8272\u8f93\u51fa -------------------- */
 #define COLOR_RESET "\033[0m"
 #define COLOR_RED "\033[31m"
 #define COLOR_GREEN "\033[32m"
@@ -13,20 +12,18 @@
 #define COLOR_BLUE "\033[34m"
 #define COLOR_BOLD "\033[1m"
 
-/* -------------------- \u6d4b\u8bd5\u7c7b\u578b -------------------- */
 typedef void (*TestFunc)(void);
 
 typedef struct TestEntry {
   const char *name;
   TestFunc func;
-  int run;    /* \u662f\u5426\u8fd0\u884c */
-  int failed; /* \u672c\u6d4b\u8bd5\u662f\u5426\u5931\u8d25 */
+  int run;
+  int failed;
   struct TestEntry *next;
 } TestEntry;
 
 static TestEntry *test_list_head = NULL;
 
-/* \u6ce8\u518c\u6d4b\u8bd5\u51fd\u6570 */
 static void add_test(const char *name, TestFunc func) {
   TestEntry *entry = malloc(sizeof(TestEntry));
   if (!entry) {
@@ -35,13 +32,12 @@ static void add_test(const char *name, TestFunc func) {
   }
   entry->name = name;
   entry->func = func;
-  entry->run = 0;    /* \u9ed8\u8ba4\u4e0d\u8fd0\u884c */
-  entry->failed = 0; /* \u9ed8\u8ba4\u672a\u5931\u8d25 */
+  entry->run = 0;
+  entry->failed = 0;
   entry->next = test_list_head;
   test_list_head = entry;
 }
 
-/* -------------------- \u6d4b\u8bd5\u5b8f -------------------- */
 #define TEST(name)                                                             \
   static void test_##name(void);                                               \
   __attribute__((constructor)) static void register_##name(void) {             \
@@ -49,14 +45,11 @@ static void add_test(const char *name, TestFunc func) {
   }                                                                            \
   static void test_##name(void)
 
-/* \u65ad\u8a00\u5b8f\uff08\u4e0d\u9000\u51fa\uff0c\u6807\u8bb0\u5931\u8d25\uff09
- */
 #define ASSERT(expr)                                                           \
   do {                                                                         \
     if (!(expr)) {                                                             \
       fprintf(stderr,                                                          \
-              COLOR_RED COLOR_BOLD                                             \
-              "%s:%d: Assertion `%s` failed" COLOR_RESET,             \
+              COLOR_RED COLOR_BOLD "%s:%d: Assertion `%s` failed" COLOR_RESET, \
               __FILE__, __LINE__, #expr);                                      \
       if (current_test)                                                        \
         current_test->failed = 1;                                              \
@@ -67,18 +60,17 @@ static void add_test(const char *name, TestFunc func) {
   do {                                                                         \
     if ((a) != (b)) {                                                          \
       fprintf(stderr,                                                          \
-              COLOR_RED COLOR_BOLD "%s:%d: Assertion `%s == %s` "       \
-                                   "failed (%lld != %lld)" COLOR_RESET,      \
+              COLOR_RED COLOR_BOLD "%s:%d: Assertion `%s == %s` "              \
+                                   "failed (%lld != %lld)" COLOR_RESET,        \
               __FILE__, __LINE__, #a, #b, (long long)(a), (long long)(b));     \
       if (current_test)                                                        \
         current_test->failed = 1;                                              \
     }                                                                          \
   } while (0)
 
-/* -------------------- \u8fd0\u884c\u6d4b\u8bd5 -------------------- */
-static TestEntry *current_test = NULL; /* 当前运行的测试，用于 ASSERT */
+static TestEntry *current_test = NULL;
 
-static void run_tests(void) {
+static int run_tests(void) {
   int passed = 0, skipped = 0, failed = 0, total = 0;
   TestEntry *p = test_list_head;
   while (p) {
@@ -96,7 +88,6 @@ static void run_tests(void) {
       printf(COLOR_BLUE "Running test %s..." COLOR_RESET, p->name);
       fflush(stdout);
 
-      /* 屏蔽测试内 printf 输出 */
       FILE *old_stdout = stdout;
       stdout = fopen("/dev/null", "w");
       if (!stdout) {
@@ -104,9 +95,9 @@ static void run_tests(void) {
         exit(1);
       }
 
-      current_test = p; /* 设置当前测试 */
+      current_test = p;
       p->func();
-      current_test = NULL; /* 测试结束 */
+      current_test = NULL;
 
       fclose(stdout);
       stdout = old_stdout;
@@ -130,8 +121,10 @@ static void run_tests(void) {
   printf("Passed %s%d%s, Failed %s%d%s, Skipped %s%d%s, Total %d\n",
          COLOR_GREEN, passed, COLOR_RESET, COLOR_RED, failed, COLOR_RESET,
          COLOR_YELLOW, skipped, COLOR_RESET, total);
+  if (failed != 0) return -1;
+  else return 0;
 }
-/* -------------------- TEST_MAIN -------------------- */
+
 #define TEST_MAIN(...)                                                         \
   int main(void) {                                                             \
     const char *all_names = #__VA_ARGS__;                                      \
@@ -163,8 +156,7 @@ static void run_tests(void) {
         start = i + 1;                                                         \
       }                                                                        \
     }                                                                          \
-    run_tests();                                                               \
-    return 0;                                                                  \
+    return run_tests();                                                               \
   }
 
 #endif /* CW_UNIT_TEST_H */

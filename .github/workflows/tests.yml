@@ -1,0 +1,28 @@
+name: C Tests
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Compile tests
+      run: |
+        gcc ../test/test_cw_rt_string.c ../runtime/cw_rt_string.c \
+            -I../runtime \
+            -o test_cw_rt_string \
+            -Wall -Wextra
+
+    - name: Run tests
+      run: ./test_cw_rt_string
+

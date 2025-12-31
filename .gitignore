@@ -1,3 +1,7 @@
 build/
-cweb_test_build/
 .vscode/
+
+test/*.gc*
+
+docs/**
+!docs/Doxyfile
