@@ -36,15 +36,18 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential
 
+    - name: Compile test dynlib
+      run: gcc -fPIC -shared test/libtest.c -o test/libtest.so
+
     - name: Compile test
       run: |
         gcc test/test_cw_rt_dynlib.c runtime/cw_rt_dynlib_linux.c \
             -Iruntime \
             -o test_cw_rt_dynlib \
             -Wall -Wextra
-    
-    - name: Compile test dynlib
-      run: gcc -fPIC -shared test/libtest.c -o test/libtest.so
+
+    - name: Run tests
+      run: ./test_cw_rt_dynlib
     
     - name: Run tests
       run: ./test_cw_rt_dynlib
