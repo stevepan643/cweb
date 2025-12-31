@@ -37,7 +37,8 @@ CW_RT_String cw_rt_string_new() {
 }
 
 CW_RT_String cw_rt_string_new_from_cstr(const char *cstr) {
-	if (!cstr) return NULL;
+  if (!cstr)
+    return NULL;
   CW_RT_String s = (CW_RT_String)malloc(sizeof(struct CW_RT_String_t));
   size_t len = strlen(cstr);
   s->capacity = len + 1;
@@ -48,7 +49,8 @@ CW_RT_String cw_rt_string_new_from_cstr(const char *cstr) {
 }
 
 CW_RT_String cw_rt_string_new_from_string(const CW_RT_String str) {
-	if (!str || str->length == 0) return cw_rt_string_new();
+  if (!str || str->length == 0)
+    return cw_rt_string_new();
   CW_RT_String s = (CW_RT_String)malloc(sizeof(struct CW_RT_String_t));
   s->capacity = str->capacity;
   s->length = str->length;
@@ -58,7 +60,8 @@ CW_RT_String cw_rt_string_new_from_string(const CW_RT_String str) {
 }
 
 void cw_rt_string_delete(CW_RT_String str) {
-	if (str == NULL) return;
+  if (str == NULL)
+    return;
   free(str->cstr);
   free(str);
 }
@@ -75,26 +78,30 @@ const char *cw_rt_string_get_cstr(const CW_RT_String str) { return str->cstr; }
 int cw_rt_string_get_length(const CW_RT_String str) { return (int)str->length; }
 
 void cw_rt_string_append_str(CW_RT_String str, const CW_RT_String other) {
-if (!str || !other) return;
+  if (!str || !other)
+    return;
   cw_rt_string_ensure_capacity(str, str->length + other->length + 1);
   strcpy(str->cstr + str->length, other->cstr);
   str->length += other->length;
 }
 void cw_rt_string_append_cstr(CW_RT_String str, const char *cstr) {
-	if (!str || !cstr) return;
+  if (!str || !cstr)
+    return;
   size_t len = strlen(cstr);
   cw_rt_string_ensure_capacity(str, str->length + len + 1);
   strcpy(str->cstr + str->length, cstr);
   str->length += len;
 }
 void cw_rt_string_set_str(CW_RT_String str, const CW_RT_String other) {
-if (!str || !other) return;
+  if (!str || !other)
+    return;
   cw_rt_string_ensure_capacity(str, other->length + 1);
   strcpy(str->cstr, other->cstr);
   str->length = other->length;
 }
 void cw_rt_string_set_cstr(CW_RT_String str, const char *cstr) {
-	if (!str || !cstr) return;
+  if (!str || !cstr)
+    return;
   size_t len = strlen(cstr);
   cw_rt_string_ensure_capacity(str, len + 1);
   strcpy(str->cstr, cstr);
@@ -103,7 +110,8 @@ void cw_rt_string_set_cstr(CW_RT_String str, const char *cstr) {
 
 void cw_rt_string_insert_str(CW_RT_String str, size_t idx,
                              const CW_RT_String other) {
-if (!str || !other) return;
+  if (!str || !other)
+    return;
   if (idx > str->length)
     idx = str->length;
   cw_rt_string_ensure_capacity(str, str->length + other->length + 1);
@@ -113,7 +121,8 @@ if (!str || !other) return;
   str->length += other->length;
 }
 void cw_rt_string_insert_cstr(CW_RT_String str, size_t idx, const char *cstr) {
-	if (!str || !cstr) return;
+  if (!str || !cstr)
+    return;
   size_t len = strlen(cstr);
   if (idx > str->length)
     idx = str->length;
@@ -124,7 +133,8 @@ void cw_rt_string_insert_cstr(CW_RT_String str, size_t idx, const char *cstr) {
 }
 
 void cw_rt_string_remove(CW_RT_String str, size_t idx, size_t len) {
-	if (!str) return;
+  if (!str)
+    return;
   if (idx >= str->length)
     return;
   if (idx + len > str->length)
@@ -133,23 +143,27 @@ void cw_rt_string_remove(CW_RT_String str, size_t idx, size_t len) {
   str->length -= len;
 }
 void cw_rt_string_clear(CW_RT_String str) {
-	if (!str) return;
+  if (!str)
+    return;
   str->length = 0;
   str->cstr[0] = '\0';
 }
 
 bool cw_rt_string_compare_str(const CW_RT_String str1,
                               const CW_RT_String str2) {
-if (!str1 || !str2) return false;
+  if (!str1 || !str2)
+    return false;
   return strcmp(str1->cstr, str2->cstr) == 0;
 }
 bool cw_rt_string_compare_cstr(const CW_RT_String str, const char *cstr) {
-	if (!str || !cstr) return false;
+  if (!str || !cstr)
+    return false;
   return strcmp(str->cstr, cstr) == 0;
 }
 
 size_t cw_rt_string_find(const CW_RT_String str, const char *substr) {
-	if (!str || !substr) return 0;
+  if (!str || !substr)
+    return 0;
   char *pos = strstr(str->cstr, substr);
   if (!pos)
     return (size_t)-1;
@@ -214,7 +228,7 @@ static void cw_rt_string_replace_internal(CW_RT_String str, const char *old_sub,
 
   strcpy(str->cstr, write);
   memcpy(str->cstr, write, new_total_len);
-str->cstr[new_total_len] = '\0';
+  str->cstr[new_total_len] = '\0';
 
   str->length = new_total_len;
   free(write);
@@ -222,29 +236,34 @@ str->cstr[new_total_len] = '\0';
 
 void cw_rt_string_replace(const CW_RT_String str, const char *old_sub,
                           const char *new_sub) {
-	if (!str || !old_sub || !new_sub ) return;
+  if (!str || !old_sub || !new_sub)
+    return;
   cw_rt_string_replace_internal(str, old_sub, new_sub, false);
 }
 
 void cw_rt_string_replace_all(const CW_RT_String str, const char *old_sub,
                               const char *new_sub) {
-	if (!str || !old_sub || !new_sub ) return;
+  if (!str || !old_sub || !new_sub)
+    return;
   cw_rt_string_replace_internal(str, old_sub, new_sub, true);
 }
 
 void cw_rt_string_to_upper(CW_RT_String str) {
-	if (!str) return;
+  if (!str)
+    return;
   for (size_t i = 0; i < str->length; i++)
     str->cstr[i] = toupper(str->cstr[i]);
 }
 void cw_rt_string_to_lower(CW_RT_String str) {
-	if (!str) return;
+  if (!str)
+    return;
   for (size_t i = 0; i < str->length; i++)
     str->cstr[i] = tolower(str->cstr[i]);
 }
 
 void cw_rt_string_trim(CW_RT_String str) {
-	if (!str) return;
+  if (!str)
+    return;
   size_t start = 0;
   while (start < str->length && isspace((unsigned char)str->cstr[start]))
     start++;
@@ -260,7 +279,8 @@ void cw_rt_string_trim(CW_RT_String str) {
 
 CW_RT_String cw_rt_string_substring(const CW_RT_String str, size_t start,
                                     size_t end) {
-	if (!str) return NULL;
+  if (!str)
+    return NULL;
   if (start > str->length)
     start = str->length;
   if (end > str->length)
@@ -278,7 +298,8 @@ CW_RT_String cw_rt_string_substring(const CW_RT_String str, size_t start,
 
 CW_RT_String *cw_rt_string_split(const CW_RT_String str, char delimiter,
                                  size_t *cnt) {
-	if (!str | !cnt) return NULL;
+  if (!str | !cnt)
+    return NULL;
   size_t count = 1;
   for (size_t i = 0; i < str->length; i++)
     if (str->cstr[i] == delimiter)
@@ -303,11 +324,11 @@ CW_RT_String *cw_rt_string_split(const CW_RT_String str, char delimiter,
 }
 
 unsigned long cw_rt_string_hash(const CW_RT_String str) {
-	if (!str) return 0;
+  if (!str)
+    return 0;
   unsigned long hash = 5381;
   for (size_t i = 0; i < str->length; i++) {
     hash = ((hash << 5) + hash) + (unsigned char)str->cstr[i];
   }
   return hash;
 }
-

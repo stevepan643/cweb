@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  build-and-test:
+  test-strng:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential
 
-    - name: Compile tests
+    - name: Compile test
       run: |
         gcc test/test_cw_rt_string.c runtime/cw_rt_string.c \
             -Iruntime \
@@ -25,4 +25,27 @@ jobs:
 
     - name: Run tests
       run: ./test_cw_rt_string
+
+  test-dynlib:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Compile test
+      run: |
+        gcc test/test_cw_rt_dynlib.c runtime/cw_rt_dynlib_linux.c \
+            -Iruntime \
+            -o test_cw_rt_dynlib \
+            -Wall -Wextra
+    
+    - name: Compile test dynlib
+      run: gcc -fPIC -shared test/libtest.c -o test/libtest.so
+    
+    - name: Run tests
+      run: ./test_cw_rt_dynlib
 

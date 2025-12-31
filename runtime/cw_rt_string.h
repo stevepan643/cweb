@@ -188,7 +188,7 @@ unsigned long cw_rt_string_hash(const CW_RT_String str);
   _Generic((val),                                                              \
       CW_RT_String: cw_rt_string_append_str,                                   \
       char *: cw_rt_string_append_cstr,                                        \
-      const char *: cw_rt_string_append_cstr,\
+      const char *: cw_rt_string_append_cstr,                                  \
       default: cw_rt_string_append_cstr)(str, val)
 
 /** @brief Convenient set interface using C11 _Generic. */
@@ -196,7 +196,7 @@ unsigned long cw_rt_string_hash(const CW_RT_String str);
   _Generic((val),                                                              \
       CW_RT_String: cw_rt_string_set_str,                                      \
       char *: cw_rt_string_set_cstr,                                           \
-      const char *: cw_rt_string_set_cstr,\
+      const char *: cw_rt_string_set_cstr,                                     \
       default: cw_rt_string_set_cstr)(str, val)
 
 /** @brief Convenient insert interface using C11 _Generic. */
@@ -204,15 +204,15 @@ unsigned long cw_rt_string_hash(const CW_RT_String str);
   _Generic((val),                                                              \
       CW_RT_String: cw_rt_string_insert_str,                                   \
       char *: cw_rt_string_insert_cstr,                                        \
-      const char *: cw_rt_string_insert_cstr,\
+      const char *: cw_rt_string_insert_cstr,                                  \
       default: cw_rt_string_insert_cstr)(str, idx, val)
 
 /** @brief Convenient compare interface using C11 _Generic. */
 #define cw_rt_string_compare(str1, str2)                                       \
-  _Generic((str2),                                                              \
+  _Generic((str2),                                                             \
       CW_RT_String: cw_rt_string_compare_str,                                  \
-      char *: cw_rt_string_compare_cstr,                                        \
-      const char *: cw_rt_string_compare_cstr,\
+      char *: cw_rt_string_compare_cstr,                                       \
+      const char *: cw_rt_string_compare_cstr,                                 \
       default: cw_rt_string_compare_cstr)(str1, str2)
 
 /** @brief Shorthand: create a CW_RT_String from a C string. */

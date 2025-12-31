@@ -121,8 +121,10 @@ static int run_tests(void) {
   printf("Passed %s%d%s, Failed %s%d%s, Skipped %s%d%s, Total %d\n",
          COLOR_GREEN, passed, COLOR_RESET, COLOR_RED, failed, COLOR_RESET,
          COLOR_YELLOW, skipped, COLOR_RESET, total);
-  if (failed != 0) return -1;
-  else return 0;
+  if (failed != 0)
+    return -1;
+  else
+    return 0;
 }
 
 #define TEST_MAIN(...)                                                         \
@@ -156,7 +158,7 @@ static int run_tests(void) {
         start = i + 1;                                                         \
       }                                                                        \
     }                                                                          \
-    return run_tests();                                                               \
+    return run_tests();                                                        \
   }
 
 #endif /* CW_UNIT_TEST_H */
