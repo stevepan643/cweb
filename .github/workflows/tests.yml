@@ -18,8 +18,8 @@ jobs:
 
     - name: Compile tests
       run: |
-        gcc ../test/test_cw_rt_string.c ../runtime/cw_rt_string.c \
-            -I../runtime \
+        gcc test/test_cw_rt_string.c runtime/cw_rt_string.c \
+            -Iruntime \
             -o test_cw_rt_string \
             -Wall -Wextra
 
