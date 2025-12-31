@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 TEST(load_and_unload) {
-  AUTO_FREE(CW_RT_DynLib) lib = cw_rt_dynlib_load_from_path("./libtest.so");
+  AUTO_FREE(CW_RT_DynLib) lib = cw_rt_dynlib_load_from_path("./test/libtest.so");
 
   ASSERT(lib != NULL);
   ASSERT(cw_rt_dynlib_get_refcount(lib) == 1);
@@ -13,7 +13,7 @@ TEST(load_and_unload) {
 }
 
 TEST(load_func_and_call) {
-  AUTO_FREE(CW_RT_DynLib) lib = cw_rt_dynlib_load_from_path("./libtest.so");
+  AUTO_FREE(CW_RT_DynLib) lib = cw_rt_dynlib_load_from_path("./test/libtest.so");
   ASSERT(lib != NULL);
 
   AUTO_FREE(CW_RT_DynLib_FuncWrapper) func = cw_rt_dynlib_load_func(lib, "foo");
